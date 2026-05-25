@@ -12,7 +12,7 @@
     packages.git-pkg = inputs.wrapper-modules.wrappers.git.wrap {
       inherit pkgs; 
       settings = {
-        init.defaultBranch = "master";
+        init.defaultBranch = "main";
 	core = {
 	  autoSetupRemote = true;
 	  fsmonitor = true; 

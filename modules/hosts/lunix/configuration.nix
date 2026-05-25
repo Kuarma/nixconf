@@ -13,15 +13,16 @@
       self.nixosModules.git
       self.nixosModules.tmux
       self.nixosModules.swaylock
+      inputs.home-manager.nixosModules.home-manager
     ];
 
     networking.hostName = "lunix"; # stay
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ]; # default
 
-    # Disko for btrfs
+    # Disko with btrfs
 
-    boot.loader = {
+    boot.loader = { # default
       limine = {
         enable = true;
 	secureBoot.autoGenerateKeys = true;

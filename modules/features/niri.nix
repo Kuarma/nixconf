@@ -6,6 +6,20 @@
       useNautilus = true;
       package = self.packages.${pkgs.stdenv.hostPlatform.system}.niri-pkg;
     };
+
+    xdg.portal = {
+      enable = true;
+      extraPortals = with pkgs; [ 
+        xdg-desktop-portal
+        xdg-desktop-portal-gtk
+        xdg-dbus-proxy
+      ];
+      config.common.default = 
+      [
+        "gnome" 
+        "gtk"
+      ];
+    };
   };
 
   perSystem = { pkgs, lib, self', ... }: {
@@ -32,10 +46,6 @@
             { proportion = 0.5; }
             { proportion = 1.0; }
           ];
-
-          default-column-width = {
-            proportion = 1.0;
-          };
 
           focus-ring = {
             off = _: { };
@@ -69,14 +79,51 @@
             mode = "5120x1440@239.761";
 	    scale = 1.0;
 	  };
+	  variable-refresh-rate = true;
+	  focus-at-startup = true;
 	};
 
-        input.keyboard.xkb.layout = "ch";
+        gestures = {
+          hot-corners = {
+            off = _: { };
+          };
+        };
+
+	prefer-no-csd = _: { };
+
+        input = { 
+	  keyboard = {
+	    xkb.layout = "ch";
+	    numlock = _: { };
+	  };
+        
+	  warp-mouse-to-focus = _: { };
+
+          focus-follows-mouse = _: {
+            props = {
+              max-scroll-amount = "0%";
+            };
+          };
+	};
+
+	environment = {
+          CLUTTER_BACKEND = "wayland";
+          GDK_BACKEND = "wayland,x11";
+          MOZ_ENABLE_WAYLAND = "1";
+          NIXOS_OZONE_WL = "1";
+          QT_QPA_PLATFORM = "wayland";
+          QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+          ELECTRON_OZONE_PLATFORM_HINT = "auto";
+
+          XDG_SESSION_TYPE = "wayland";
+          XDG_CURRENT_DESKTOP = "niri";
+          DISPLAY = ":0";
+        };
 
         binds = {
-          "Mod+X".spawn = lib.getExe pkgs.kitty;
+          "Mod+X".spawn = "kitty";
           "Mod+Space".spawn-sh = "${lib.getExe self'.packages.noctalia-pkg} ipc call launcher toggle";
-          "Mod+B".spawn = lib.getExe pkgs.brave;
+          "Mod+B".spawn = "brave";
           "Mod+E".spawn = lib.getExe pkgs.nautilus;
 
 	  "Mod+W".close-window = _: { };
@@ -114,6 +161,12 @@
           "Mod+Shift+7".move-column-to-workspace = 7;
           "Mod+Shift+8".move-column-to-workspace = 8;
           "Mod+Shift+9".move-column-to-workspace = 9;
+
+	  "Mod+Shift+Ctrl+H".move-column-to-monitor-left = _: { };
+          "Mod+Shift+Ctrl+J".move-column-to-monitor-down = _: { };
+          "Mod+Shift+Ctrl+K".move-column-to-monitor-up = _: { };
+          "Mod+Shift+Ctrl+L".move-column-to-monitor-right = _: { };
+
 
           "Mod+D".focus-workspace-down = _: { };
           "Mod+U".focus-workspace-up = _: { };

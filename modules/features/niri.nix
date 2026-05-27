@@ -7,6 +7,8 @@
       package = self.packages.${pkgs.stdenv.hostPlatform.system}.niri-pkg;
     };
 
+    services.playerctld.enable = true;
+
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [ 
@@ -197,21 +199,41 @@
               ];
             };
           };
-          # "XF86AudioMicMute" = _: {
-          #   props = {
-          #     allow-when-locked = true;
-          #   };
-          #   content = {
-          #     spawn = [
-          #       "wpctl"
-          #       "set-mute"
-          #       "@DEFAULT_AUDIO_SOURCE@"
-          #       "toggle"
-          #     ];
-          #   };
-          # };
+          "XF86AudioPlay" = _: {
+            props = {
+              allow-when-locked = true;
+            };
+            content = {
+              spawn = [
+                "playerctl"
+                "play-pause"
+              ];
+            };
+          };
+          "XF86AudioPrev" = _: {
+            props = {
+              allow-when-locked = true;
+            };
+            content = {
+              spawn = [
+                "playerctl"
+                "previous"
+              ];
+            };
+          };
+          "XF86AudioNext" = _: {
+            props = {
+              allow-when-locked = true;
+            };
+            content = {
+              spawn = [
+                "playerctl"
+                "next"
+              ];
+            };
+          };
 
-	          "XF86AudioRaiseVolume" = _: {
+          "XF86AudioRaiseVolume" = _: {
             props = {
               allow-when-locked = true;
             };

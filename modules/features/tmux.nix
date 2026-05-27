@@ -31,7 +31,6 @@
 	  catppuccin
        ];
       configBefore = ''
-	# Theme 
         set -g @catppuccin_flavor 'mocha' 
 
 	set -g status-position top
@@ -47,13 +46,11 @@
 	set -g @ctp_mauve "#c6a0f6"
 	set -g @ctp_crust "#181926"
 
-        # tmux-nvim-navigator
         set -g @navigate-left  'h'
         set -g @navigate-down  'j'
         set -g @navigate-up    'k'
         set -g @navigate-right 'l'
 
-        # window ctrl
         bind -r -N "Resize the pane left" H resize-pane -L
         bind -r -N "Resize the pane down" J resize-pane -D
         bind -r -N "Resize the pane up" K resize-pane -U
@@ -67,7 +64,6 @@
         bind v split-window -h
         bind s split-window -v
 
-	# general
 	setw -g automatic-rename on
         set -g set-titles on
       '';

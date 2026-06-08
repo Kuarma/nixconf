@@ -13,12 +13,6 @@ updates:
       - "*"
     multi-ecosystem-group: "nix-all"
 
-  - package-ecosystem: "nix"
-    directory: "/ci"
-    patterns:
-      - "*"
-    multi-ecosystem-group: "nix-all"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

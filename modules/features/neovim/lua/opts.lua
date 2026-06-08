@@ -46,11 +46,6 @@ if not vim.fn.isdirectory(undoDir) then
 	utils.create_dir(undoDir)
 end
 
-opt.fillchars = { fold = " " }
-opt.foldmethod = "indent"
-opt.foldenable = false
-opt.foldlevel = 99
-
 opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2

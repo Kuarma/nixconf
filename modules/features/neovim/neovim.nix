@@ -25,18 +25,38 @@
       };
 
       specs.plugins = {
-	data = with pkgs.vimPlugins; [
-	  lz-n
-          plenary-nvim
+	      data = with pkgs.vimPlugins; [
+          lz-n
+
           nvim-lspconfig
+          nvim-treesitter-textobjects
           nvim-treesitter.withAllGrammars
-	];
+          nvim-ts-autotag
+
+          nvim-web-devicons
+          lspkind-nvim
+          colorful-menu-nvim
+          blink-cmp
+
+          snacks-nvim
+          lualine-nvim
+          luasnip
+          vim-tmux-navigator
+          undotree
+          oil-nvim
+          plenary-nvim
+
+          tokyonight-nvim
+	      ];
       };
 
       specs.lazyPlugins = {
         lazy = true;
-	data = with pkgs.vimPlugins; [
-	];
+        data = with pkgs.vimPlugins; [
+          nvim-autopairs
+          gitsigns-nvim
+          lazydev-nvim
+        ];
       };
     };
   };

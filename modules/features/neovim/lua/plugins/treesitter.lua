@@ -1,108 +1,160 @@
-local function select(textobj)
-	return function()
-		require("nvim-treesitter-textobjects.select").select_textobject(textobj, "textobjects")
-	end
-end
-
 return {
-	{
-		"nvim-treesitter/nvim-treesitter-context",
-		config = function()
-			require("treesitter-context").setup({
-				enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-				max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-				min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-				line_numbers = true,
-				multiline_threshold = 20, -- Maximum number of lines to show for a single context
-				trim_scope = "outer", -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-				mode = "cursor", -- Line used to calculate context. Choices: 'cursor', 'topline'
-				-- Separator between context and content. Should be a single character string, like '-'.
-				-- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
-				separator = nil,
-				zindex = 20, -- The Z-index of the context window
-				on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
-			})
-		end,
-	},
-	{
-		"kylechui/nvim-surround",
-		version = "^4.0.0",
-		event = "VeryLazy",
-	},
-	{
-		"nvim-treesitter/nvim-treesitter",
-		lazy = false,
-		branch = "main",
-		build = ":TSUpdate",
-		init = function()
-			local parser_installed = {
-				"lua",
-				"vim",
-				"vimdoc",
-				"editorconfig",
-				"gitignore",
-				"bash",
-				"regex",
-				"query",
-				"markdown",
-				"markdown_inline",
-				"c_sharp",
-				"xml",
-				"sql",
-				"json",
-				"json5",
-				"html",
-				"css",
-				"javascript",
-				"latex",
-				"scss",
-				"svelte",
-				"tsx",
-				"typst",
-				"vue",
-			}
+  {
+    "nvim-treesitter",
+    auto_enable = true,
+    lazy = false,
+    after = function(plugin)
+      ---@param buf integer
+      ---@param language string
+      local function treesitter_try_attach(buf, language)
+        if not vim.treesitter.language.add(language) then
+          return false
+        end
+        vim.treesitter.start(buf, language)
 
-			vim.defer_fn(function()
-				require("nvim-treesitter").install(parser_installed)
-			end, 1000)
-			require("nvim-treesitter").update()
+        vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+        vim.wo.foldmethod = "expr"
+        vim.o.foldlevel = 99
 
-			vim.api.nvim_create_autocmd("FileType", {
-				desc = "User: enable treesitter highlighting",
-				callback = function()
-					local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
-					if lang then
-						pcall(vim.treesitter.start)
-					else
-						vim.notify("Parser not found")
-					end
-				end,
-			})
-		end,
-	},
-	{
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		dependencies = "nvim-treesitter/nvim-treesitter",
-		branch = "main",
-		opts = {
-			select = {
-				lookahead = true,
-				include_surrounding_whitespace = false,
-			},
-		},
-		keys = {
-			{ "a<CR>", select("@return.outer"), mode = { "x", "o" }, desc = "↩ outer return" },
-			{ "i<CR>", select("@return.inner"), mode = { "x", "o" }, desc = "↩ inner return" },
-			{ "aa", select("@parameter.outer"), mode = { "x", "o" }, desc = "󰏪 outer arg" },
-			{ "ia", select("@parameter.inner"), mode = { "x", "o" }, desc = "󰏪 inner arg" },
-			{ "iu", select("@loop.inner"), mode = { "x", "o" }, desc = "󰛤 inner loop" },
-			{ "au", select("@loop.outer"), mode = { "x", "o" }, desc = "󰛤 outer loop" },
-			{ "al", select("@call.outer"), mode = { "x", "o" }, desc = "󰡱 outer call" },
-			{ "il", select("@call.inner"), mode = { "x", "o" }, desc = "󰡱 inner call" },
-			{ "af", select("@function.outer"), mode = { "x", "o" }, desc = " outer function" },
-			{ "if", select("@function.inner"), mode = { "x", "o" }, desc = " inner function" },
-			{ "ao", select("@conditional.outer"), mode = { "x", "o" }, desc = "󱕆 outer condition" },
-			{ "io", select("@conditional.inner"), mode = { "x", "o" }, desc = "󱕆 inner condition" },
-		},
-	},
+        vim.b.did_indent = 1 -- this right here prevents built-in indent scripts from loading
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter.indent'.get_indent(v:lnum)"
+
+        return true
+      end
+
+      local isNix = vim.g.nix_info_plugin_name ~= nil
+      local installable_parsers = isNix or require("nvim-treesitter").get_available()
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function(args)
+          local buf, filetype = args.buf, args.match
+          local language = vim.treesitter.language.get_lang(filetype)
+          if not language then
+            return
+          end
+
+          if not treesitter_try_attach(buf,language) and not isNix then
+            ---@cast installable_parsers string[]
+            if vim.tbl_contains(installable_parsers, language) then
+              require("nvim-treesitter").install(language):await(function()
+                treesitter_try_attach(buf, language)
+              end)
+            end
+          end
+        end,
+      })
+    end,
+  },
+  {
+    "nvim-treesitter-textobjects",
+    auto_enable = true,
+    lazy = false,
+    before = function(plugin)
+      vim.g.no_plugin_maps = true
+    end,
+    after = function(plugin)
+      require("nvim-treesitter-textobjects").setup {
+        select = {
+          lookahead = true,
+          -- Can also be a function which gets passed a table with the keys
+          -- * query_string: eg '@function.inner'
+          -- * method: eg 'v' or 'o'
+          -- and should return the mode ('v', 'V', or '<c-v>') or a table
+          -- mapping query_strings to modes.
+          selection_modes = {
+            ['@parameter.outer'] = 'v', -- charwise
+            ['@function.outer'] = 'V', -- linewise
+          },
+          include_surrounding_whitespace = false,
+        },
+        move = {
+          set_jumps = true,
+        },
+      }
+
+      vim.keymap.set({ "x", "o" }, "am", function()
+        require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+      end)
+      vim.keymap.set({ "x", "o" }, "im", function()
+        require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+      end)
+      vim.keymap.set({ "x", "o" }, "ac", function()
+        require "nvim-treesitter-textobjects.select".select_textobject("@class.outer", "textobjects")
+      end)
+      vim.keymap.set({ "x", "o" }, "ic", function()
+        require "nvim-treesitter-textobjects.select".select_textobject("@class.inner", "textobjects")
+      end)
+      -- You can also use captures from other query groups like `locals.scm`
+      vim.keymap.set({ "x", "o" }, "as", function()
+        require "nvim-treesitter-textobjects.select".select_textobject("@local.scope", "locals")
+      end)
+      vim.keymap.set("n", "<leader>a", function()
+        require("nvim-treesitter-textobjects.swap").swap_next "@parameter.inner"
+      end)
+      vim.keymap.set("n", "<leader>A", function()
+        require("nvim-treesitter-textobjects.swap").swap_previous "@parameter.outer"
+      end)
+
+      vim.keymap.set({ "n", "x", "o" }, "]m", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
+      end)
+      vim.keymap.set({ "n", "x", "o" }, "]]", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@class.outer", "textobjects")
+      end)
+      -- You can also pass a list to group multiple queries.
+      vim.keymap.set({ "n", "x", "o" }, "]o", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start({"@loop.inner", "@loop.outer"}, "textobjects")
+      end)
+      -- You can also use captures from other query groups like `locals.scm` or `folds.scm`
+      vim.keymap.set({ "n", "x", "o" }, "]s", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@local.scope", "locals")
+      end)
+      vim.keymap.set({ "n", "x", "o" }, "]z", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
+      end)
+
+      vim.keymap.set({ "n", "x", "o" }, "]M", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
+      end)
+      vim.keymap.set({ "n", "x", "o" }, "][", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@class.outer", "textobjects")
+      end)
+
+      vim.keymap.set({ "n", "x", "o" }, "[m", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
+      end)
+      vim.keymap.set({ "n", "x", "o" }, "[[", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@class.outer", "textobjects")
+      end)
+
+      vim.keymap.set({ "n", "x", "o" }, "[M", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer", "textobjects")
+      end)
+      vim.keymap.set({ "n", "x", "o" }, "[]", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@class.outer", "textobjects")
+      end)
+      local ts_repeat_move = require "nvim-treesitter-textobjects.repeatable_move"
+
+      vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
+      vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_opposite)
+
+      vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f_expr, { expr = true })
+      vim.keymap.set({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F_expr, { expr = true })
+      vim.keymap.set({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t_expr, { expr = true })
+      vim.keymap.set({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T_expr, { expr = true })
+    end,
+  },
+  {
+    "nvim-ts-autotag",
+    auto_enable = true,
+    lazy = false,
+    after = function (plugin)
+      require('nvim-ts-autotag').setup({
+        opts = {
+          enable_close = true,
+          enable_rename = true,
+          enable_close_on_slash = false 
+        },
+      })
+    end,
+  },
 }

@@ -26,20 +26,17 @@
 
       specs.plugins = {
 	      data = with pkgs.vimPlugins; [
-          lz-n
-
-          nvim-lspconfig
           nvim-treesitter-textobjects
           nvim-treesitter.withAllGrammars
           nvim-ts-autotag
 
-          nvim-web-devicons
+          nvim-lspconfig
           lspkind-nvim
-          colorful-menu-nvim
-          blink-cmp
 
-          snacks-nvim
-          lualine-nvim
+          blink-cmp
+          blink-compat
+
+          lz-n
           luasnip
           vim-tmux-navigator
           undotree
@@ -47,6 +44,10 @@
           plenary-nvim
 
           tokyonight-nvim
+          nvim-web-devicons
+          lualine-nvim
+          colorful-menu-nvim
+          snacks-nvim
 	      ];
       };
 
@@ -56,6 +57,7 @@
           nvim-autopairs
           gitsigns-nvim
           lazydev-nvim
+          easy-dotnet-nvim
         ];
       };
     };

@@ -5,6 +5,10 @@
       enable = true;
       package = self.packages.${pkgs.stdenv.hostPlatform.system}.nvim-pkg;
     };
+    environment.systemPackages = with pkgs; [
+       dotnet-runtime
+       dotnet-aspnetcore
+    ];
   };
 
   perSystem = { pkgs, lib, self', ... }: {
@@ -16,6 +20,7 @@
       runtimePkgs = with pkgs; [
         ffmpeg-full
         wl-clipboard
+        ripgrep
       ];
 
       specs.init = {
@@ -31,33 +36,65 @@
           nvim-ts-autotag
 
           nvim-lspconfig
+          mason-lspconfig-nvim
+          mason-nvim
+          mason-tool-installer-nvim
+          
           lspkind-nvim
-
+          colorful-menu-nvim
           blink-cmp
           blink-compat
+          luasnip
+
+          oil-nvim
+          oil-lsp-diagnostics-nvim
+          oil-git-nvim
 
           lz-n
-          luasnip
           vim-tmux-navigator
-          undotree
-          oil-nvim
           plenary-nvim
+          nvim-nio
+
+          easy-dotnet-nvim
 
           tokyonight-nvim
           nvim-web-devicons
           lualine-nvim
-          colorful-menu-nvim
           snacks-nvim
+          nui-nvim
+          nvim-colorizer-lua
+          noice-nvim
+          nvim-notify
+          which-key-nvim
+
+          nvim-autopairs
+          gitsigns-nvim
+
+          inc-rename-nvim
 	      ];
       };
 
       specs.lazyPlugins = {
         lazy = true;
         data = with pkgs.vimPlugins; [
-          nvim-autopairs
-          gitsigns-nvim
+          nvim-dap-virtual-text
+          nvim-dap-view
+          nvim-dap
+
+          undotree
+
+          harpoon2
+
+          conform-nvim
+
+          trouble-nvim
+
           lazydev-nvim
-          easy-dotnet-nvim
+
+          telescope-nvim
+          telescope-fzf-native-nvim
+          telescope-media-files-nvim
+          telescope-ui-select-nvim
         ];
       };
     };

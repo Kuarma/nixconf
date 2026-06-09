@@ -33,23 +33,25 @@
       configBefore = ''
         set -g @catppuccin_flavor 'mocha' 
 
-	set -g status-position top
+      	set -g status-position top
+      
+      	set -g status-left ""
+      	set -g status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '
 
-	set -g status-left ""
-	set -g status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '
+      	set -g status-right-length 100
 
-	set -g status-right-length 100
-
-	set -g @ctp_bg "#24273a"
-	set -g @ctp_surface_1 "#494d64"
-	set -g @ctp_fg "#cad3f5"
-	set -g @ctp_mauve "#c6a0f6"
-	set -g @ctp_crust "#181926"
+      	set -g @ctp_bg "#24273a"
+      	set -g @ctp_surface_1 "#494d64"
+      	set -g @ctp_fg "#cad3f5"
+      	set -g @ctp_mauve "#c6a0f6"
+	      set -g @ctp_crust "#181926"
 
         set -g @navigate-left  'h'
         set -g @navigate-down  'j'
         set -g @navigate-up    'k'
         set -g @navigate-right 'l'
+
+        set -g set-clipboard on
 
         bind -r -N "Resize the pane left" H resize-pane -L
         bind -r -N "Resize the pane down" J resize-pane -D
@@ -64,7 +66,7 @@
         bind v split-window -h
         bind s split-window -v
 
-	setw -g automatic-rename on
+      	setw -g automatic-rename on
         set -g set-titles on
       '';
     };

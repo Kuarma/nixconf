@@ -2,13 +2,20 @@ return {
 	{
 		"lazydev.nvim",
 		ft = "lua",
-		after = function() end,
+		after = function()
+			require("lazydev").setup({
+				library = {
+					{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+				},
+			})
+		end,
 	},
 	{
 		"nvim-autopairs",
-		lazy = false,
 		event = "InsertEnter",
-		after = function() end,
+		after = function()
+			require("nvim-autopairs").setup({})
+		end,
 	},
 	{
 		"trouble.nvim",
@@ -27,23 +34,42 @@ return {
 	{
 		"inc-rename.nvim",
 		after = function()
-			require("inc_rename").setup()
+			require("inc_rename").setup({})
 		end,
 	},
 	{
 		"nvim-lspconfig",
 		event = "BufReadPre",
 		after = function()
-			local capabilities = {
+			local capabilities = require("blink.cmp").get_lsp_capabilities({
 				textDocument = {
 					foldingRange = {
 						dynamicRegistration = false,
 						lineFoldingOnly = true,
 					},
 				},
-			}
 
-			capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
+				settings = {
+					nixd = {
+						nixpkgs = {
+							expr = "import (builtins.getFlake(toString ./.)).inputs.nixpkgs { }",
+						},
+						options = {
+							nixos = {
+								expr = "let flake = builtins.getFlake(toString ./.); in flake.nixosConfigurations.nz.options",
+							},
+							home_manager = {
+								expr = 'let flake = builtins.getFlake(toString ./.); in flake.homeConfigurations."sab@mbp16".options',
+							},
+						},
+						Lua = {
+							diagnostics = {
+								globals = { "vim" },
+							},
+						},
+					},
+				},
+			})
 
 			vim.lsp.config("*", {
 				capabilities = capabilities,

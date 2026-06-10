@@ -4,7 +4,7 @@
   ...
 }:
 {
-  flake.nixosModules.neovim = { pkgs, lib, ... }: {
+  flake.nixosModules.neovim = { pkgs, ... }: {
     programs.neovim = {
       enable = true;
       package = self.packages.${pkgs.stdenv.hostPlatform.system}.nvim-pkg;
@@ -18,8 +18,6 @@
   perSystem =
     {
       pkgs,
-      lib,
-      self',
       ...
     }:
     {
@@ -32,6 +30,9 @@
           ffmpeg-full
           wl-clipboard
           ripgrep
+
+          lua-language-server
+          nixd
 
           nixfmt
           oxfmt
@@ -58,6 +59,7 @@
             blink-cmp
             blink-compat
             luasnip
+            lazydev-nvim
 
             oil-nvim
             oil-lsp-diagnostics-nvim
@@ -100,8 +102,6 @@
             conform-nvim
 
             trouble-nvim
-
-            lazydev-nvim
 
             easy-dotnet-nvim
 

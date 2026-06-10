@@ -2,27 +2,26 @@ return {
 	{
 		"nvim-treesitter",
 		lazy = false,
-		after = function(plugin)
-			---@param buf integer
-			---@param language string
+		after = function()
 			local function treesitter_try_attach(buf, language)
 				if not vim.treesitter.language.add(language) then
 					return false
 				end
+
 				vim.treesitter.start(buf, language)
 
 				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 				vim.wo.foldmethod = "expr"
 				vim.o.foldlevel = 99
 
-				vim.b.did_indent = 1 -- this right here prevents built-in indent scripts from loading
+				vim.b.highlight = 1
+				vim.b.did_indent = 1
 				vim.bo.indentexpr = "v:lua.require'nvim-treesitter.indent'.get_indent(v:lnum)"
 
 				return true
 			end
 
-			local isNix = vim.g.nix_info_plugin_name ~= nil
-			local installable_parsers = isNix or require("nvim-treesitter").get_available()
+			local installable_parsers = require("nvim-treesitter").get_available()
 			vim.api.nvim_create_autocmd("FileType", {
 				callback = function(args)
 					local buf, filetype = args.buf, args.match
@@ -31,7 +30,7 @@ return {
 						return
 					end
 
-					if not treesitter_try_attach(buf, language) and not isNix then
+					if not treesitter_try_attach(buf, language) then
 						---@cast installable_parsers string[]
 						if vim.tbl_contains(installable_parsers, language) then
 							require("nvim-treesitter").install(language):await(function()

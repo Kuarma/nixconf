@@ -3,7 +3,6 @@ return {
 		"blink.compat",
 		version = "2.*",
 		lazy = true,
-		opts = {},
 	},
 	{
 		"blink.cmp",

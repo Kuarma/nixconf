@@ -15,10 +15,6 @@ return {
 					timeout_ms = 1000,
 					autosave_changes = true,
 				},
-				default_file_explorer = true,
-				skip_confirm_for_simple_edits = true,
-				delete_to_trash = true,
-				columns = { "icon" },
 				keymaps = {
 					["<C-h>"] = false,
 					["<C-l>"] = false,

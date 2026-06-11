@@ -2,6 +2,7 @@ return {
 	"easy-dotnet.nvim",
 	after = function()
 		local dotnet = require("easy-dotnet")
+		require("easy-dotnet.netcoredbg").register_dap_variables_viewer()
 
 		vim.api.nvim_set_hl(0, "LspCodeLens", {
 			fg = "#717171",

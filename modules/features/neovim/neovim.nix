@@ -14,7 +14,9 @@
 
     environment = {
       systemPackages = with pkgs; [
+        nixd
         dotnet-ef
+        luaPackages.tree-sitter-cli
         (
           with pkgs.dotnetCorePackages;
           combinePackages [
@@ -47,9 +49,8 @@
           ffmpeg-full
           wl-clipboard
           ripgrep
-
           lua-language-server
-          nixd
+          vscode-langservers-extracted
 
           nixfmt
           oxfmt
@@ -92,7 +93,6 @@
             tokyonight-nvim
             nvim-web-devicons
             lualine-nvim
-            snacks-nvim
             nui-nvim
             nvim-colorizer-lua
             noice-nvim
@@ -103,16 +103,19 @@
             gitsigns-nvim
 
             inc-rename-nvim
+
+            nvim-dap-virtual-text
+            nvim-dap
+            nvim-dap-view
+            nvim-dap-ui
+
+            alpha-nvim
           ];
         };
 
         specs.lazyPlugins = {
           lazy = true;
           data = with pkgs.vimPlugins; [
-            nvim-dap-virtual-text
-            nvim-dap-view
-            nvim-dap
-
             lazygit-nvim
             undotree
 

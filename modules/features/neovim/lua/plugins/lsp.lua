@@ -39,7 +39,7 @@ return {
 	},
 	{
 		"nvim-lspconfig",
-		event = "BufReadPre",
+		lazy = false,
 		after = function()
 			local capabilities = require("blink.cmp").get_lsp_capabilities({
 				textDocument = {
@@ -48,33 +48,56 @@ return {
 						lineFoldingOnly = true,
 					},
 				},
-
-				settings = {
-					nixd = {
-						nixpkgs = {
-							expr = "import (builtins.getFlake(toString ./.)).inputs.nixpkgs { }",
-						},
-						options = {
-							nixos = {
-								expr = "let flake = builtins.getFlake(toString ./.); in flake.nixosConfigurations.nz.options",
-							},
-							home_manager = {
-								expr = 'let flake = builtins.getFlake(toString ./.); in flake.homeConfigurations."sab@mbp16".options',
-							},
-						},
-						Lua = {
-							diagnostics = {
-								globals = { "vim" },
-							},
-						},
-					},
-				},
 			})
 
 			vim.lsp.config("*", {
 				capabilities = capabilities,
 				root_markers = { ".git" },
 			})
+			vim.lsp.config("lua_ls", {
+				settings = {
+					Lua = {
+						diagnostics = {
+							globals = { "vim" },
+						},
+					},
+				},
+			})
+
+			local hostname = vim.fn.hostname()
+			local user = vim.env.USER
+
+			vim.lsp.config("nixd", {
+				cmd = { "nixd" },
+				filetypes = { "nix" },
+				root_markers = { "flake.nix" },
+				settings = {
+					nixd = {
+						nixpkgs = {
+							expr = "import <nixpkgs> { }",
+						},
+						formatting = {
+							command = { "nixfmt" },
+						},
+						options = {
+							nixos = {
+								expr = "(builtins.getFlake (toString ./.)).nixosConfigurations."
+									.. hostname
+									.. ".options",
+							},
+							home_manager = {
+								expr = "(builtins.getFlake (toString ./.)).homeConfigurations."
+									.. user
+									.. "@"
+									.. hostname
+									.. ".options",
+							},
+						},
+					},
+				},
+			})
+
+			vim.lsp.enable({ "lua_ls", "nixd" })
 
 			vim.diagnostic.config({
 				virtual_text = true,

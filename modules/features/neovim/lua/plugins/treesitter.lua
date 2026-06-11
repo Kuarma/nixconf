@@ -16,7 +16,6 @@ return {
 
 				vim.b.highlight = 1
 				vim.b.did_indent = 1
-				vim.bo.indentexpr = "v:lua.require'nvim-treesitter.indent'.get_indent(v:lnum)"
 
 				return true
 			end

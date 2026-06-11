@@ -21,7 +21,6 @@ return {
 					auto = true,
 					telescope = true,
 				},
-
 				vim.cmd.colorscheme("tokyonight"),
 			})
 		end,
@@ -62,7 +61,6 @@ return {
 	},
 	{
 		"alpha-nvim",
-		lazy = false,
 		after = function()
 			local alpha = require("alpha")
 			local dashboard = require("alpha.themes.dashboard")
@@ -127,6 +125,7 @@ return {
 		"lualine.nvim",
 		after = function()
 			local lualine = require("lualine")
+			local dotnet = require("easy-dotnet")
 
 			lualine.setup({
 				options = {
@@ -134,6 +133,15 @@ return {
 					globalstatus = true,
 				},
 				sections = {
+					lualine_a = {
+						"mode",
+						dotnet.lualine.jobs,
+						{
+							dotnet.lualine.run_status,
+							color = dotnet.lualine.run_status_color,
+							on_click = dotnet.lualine.run_status_click,
+						},
+					},
 					lualine_z = {
 						"lsp_status",
 					},
@@ -143,7 +151,6 @@ return {
 					"oil",
 					"man",
 					"fzf",
-					"mason",
 					"nvim-dap-ui",
 					"nvim-tree",
 					"lazy",

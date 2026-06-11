@@ -2,7 +2,6 @@ return {
 	"easy-dotnet.nvim",
 	after = function()
 		local dotnet = require("easy-dotnet")
-		require("easy-dotnet.netcoredbg").register_dap_variables_viewer()
 
 		vim.api.nvim_set_hl(0, "LspCodeLens", {
 			fg = "#717171",
@@ -74,6 +73,10 @@ return {
 			auto_bootstrap_namespace = {
 				type = "file_scoped",
 				enabled = true,
+				use_clipboard_json = {
+					behavior = "prompt", --'auto' | 'prompt' | 'never',
+					register = "+", -- which register to check
+				},
 			},
 		})
 	end,

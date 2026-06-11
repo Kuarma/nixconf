@@ -2,6 +2,7 @@ return {
 	{
 		"blink.compat",
 		version = "2.*",
+		before = function() end,
 	},
 	{
 		"blink.cmp",
@@ -17,7 +18,7 @@ return {
 					["<S-tab>"] = { "select_prev", "fallback" },
 					["<C-s>"] = { "show", "show_documentation", "hide_documentation" },
 					["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
-					["<A-space>"] = {
+					["<A-s>"] = {
 						function(cmp)
 							cmp.show({})
 						end,

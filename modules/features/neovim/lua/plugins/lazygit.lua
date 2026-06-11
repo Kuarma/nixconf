@@ -12,7 +12,8 @@ return {
 			{ "<leader>G", "<cmd>LazyGit<cr>", desc = "LazyGit" },
 		},
 	},
-  {
-	"undotree",
-  }
+	{
+		"undotree",
+		before = function() end,
+	},
 }

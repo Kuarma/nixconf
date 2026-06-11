@@ -16,6 +16,10 @@
       systemPackages = with pkgs; [
         nixd
         dotnet-ef
+
+        fzf
+        ripgrep
+
         luaPackages.tree-sitter-cli
         (
           with pkgs.dotnetCorePackages;
@@ -46,17 +50,23 @@
         settings.config_directory = ./.;
 
         runtimePkgs = with pkgs; [
+          # System utilities
           ffmpeg-full
           wl-clipboard
-          ripgrep
+
+          # LSP servers
           lua-language-server
           vscode-langservers-extracted
 
+          # Formatters
           nixfmt
           oxfmt
           stylua
+
+          # Markdown
           marksman
 
+          # Easy-Dotnet
           self.packages.${pkgs.stdenv.hostPlatform.system}.easy-dotnet-server
         ];
 
@@ -68,65 +78,87 @@
 
         specs.plugins = {
           data = with pkgs.vimPlugins; [
-            nvim-treesitter-textobjects
+            # Treesitter
             nvim-treesitter.withAllGrammars
+            nvim-treesitter-textobjects
             nvim-ts-autotag
 
+            # LSP
             nvim-lspconfig
 
-            lspkind-nvim
-            colorful-menu-nvim
+            # Completion & snippets
             blink-cmp
             blink-compat
+            colorful-menu-nvim
+            lspkind-nvim
             luasnip
-            lazydev-nvim
 
-            oil-nvim
-            oil-lsp-diagnostics-nvim
-            oil-git-nvim
-
+            # Core dependencies
             lz-n
-            vim-tmux-navigator
             plenary-nvim
             nvim-nio
 
+            # Navigation
+            vim-tmux-navigator
+
+            # UI & appearance
             tokyonight-nvim
             nvim-web-devicons
-            lualine-nvim
             nui-nvim
             nvim-colorizer-lua
             noice-nvim
             nvim-notify
             which-key-nvim
 
-            nvim-autopairs
-            gitsigns-nvim
-
-            inc-rename-nvim
-
-            nvim-dap-virtual-text
-            nvim-dap
-            nvim-dap-view
-            nvim-dap-ui
-
+            # Start screen & statusline
             alpha-nvim
+            lualine-nvim
+
+            # Language-specific
+            easy-dotnet-nvim
           ];
         };
 
         specs.lazyPlugins = {
           lazy = true;
           data = with pkgs.vimPlugins; [
-            lazygit-nvim
-            undotree
+            # Debugging (DAP)
+            nvim-dap
+            nvim-dap-ui
+            nvim-dap-view
+            nvim-dap-virtual-text
 
+            # File explorer
+            oil-nvim
+            oil-git-nvim
+            oil-lsp-diagnostics-nvim
+
+            # Editing
+            nvim-autopairs
+            inc-rename-nvim
+
+            # Git
+            gitsigns-nvim
+            lazygit-nvim
+
+            # Navigation & project management
             harpoon2
 
+            # Notes & task tracking
+            todo-comments-nvim
+
+            # Development helpers
+            lazydev-nvim
             conform-nvim
 
+            # History
+            undotree
+
+            # Diagnostics & quickfix
             trouble-nvim
+            nvim-bqf
 
-            easy-dotnet-nvim
-
+            # Telescope
             telescope-nvim
             telescope-fzf-native-nvim
             telescope-media-files-nvim

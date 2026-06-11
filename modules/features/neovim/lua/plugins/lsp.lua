@@ -1,5 +1,11 @@
 return {
 	{
+		"todo-comments.nvim",
+		after = function()
+			require("todo-comments").setup()
+		end,
+	},
+	{
 		"lazydev.nvim",
 		ft = "lua",
 		after = function()
@@ -33,6 +39,7 @@ return {
 	},
 	{
 		"inc-rename.nvim",
+		cmd = "IncRename",
 		after = function()
 			require("inc_rename").setup({})
 		end,

@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-dap-virtual-text",
+		cmd = "DapText",
 		after = function()
 			require("nvim-dap-virtual-text").setup({
 				enabled = true,
@@ -12,19 +13,148 @@ return {
 	},
 	{
 		"nvim-dap",
+		before = function() end,
 	},
 	{
 		"nvim-nio",
+		before = function() end,
 	},
 	{
 		"nvim-dap-view",
 		version = "1.*",
+		before = function() end,
 	},
 	{
 		"nvim-dap-ui",
+		keys = {
+			{
+				"<F1>",
+				function()
+					require("dapui").toggle()
+				end,
+				desc = "Toggle Debug UI",
+			},
+			{
+				"<F5>",
+				function()
+					require("dap").continue()
+				end,
+				desc = "Start/continue debugging",
+			},
+			{
+				"<F2>",
+				function()
+					require("dap").step_over()
+				end,
+				desc = "Step over",
+			},
+			{
+				"<F10>",
+				function()
+					require("dap").terminate()
+				end,
+				desc = "Terminate session",
+			},
+
+			{
+				"<C-t>",
+				function()
+					require("dap.ui.widgets").preview()
+				end,
+				mode = { "n", "v" },
+				desc = "Show variable in preview window",
+			},
+
+			{
+				"<leader>df",
+				function()
+					require("dap.ui.widgets").centered_float(
+						require("dap.ui.widgets").frames,
+						{ border = "rounded", width = 100, height = 20 }
+					)
+				end,
+				desc = "View call stack",
+			},
+
+			{
+				"<leader>dp",
+				function()
+					require("dapui").eval()
+				end,
+				desc = "Evaluate expression under cursor",
+			},
+
+			{
+				"dP",
+				function()
+					require("dap.ui.widgets").hover()
+				end,
+				mode = { "n", "v" },
+				desc = "Inspect variable under cursor",
+			},
+
+			{
+				"<leader>di",
+				function()
+					require("dap").step_into()
+				end,
+				desc = "Step into",
+			},
+			{
+				"<leader>do",
+				function()
+					require("dap").step_out()
+				end,
+				desc = "Step out",
+			},
+
+			{
+				"<leader>db",
+				function()
+					require("dap").toggle_breakpoint()
+				end,
+				desc = "Toggle breakpoint",
+			},
+			{
+				"<leader>dc",
+				function()
+					require("dap").clear_breakpoints()
+				end,
+				desc = "Clear breakpoints",
+			},
+			{
+				"<leader>dC",
+				function()
+					require("dap").run_to_cursor()
+				end,
+				desc = "Run to cursor",
+			},
+
+			{
+				"<leader>dr",
+				function()
+					require("dap").repl.toggle()
+				end,
+				desc = "Toggle DAP REPL",
+			},
+
+			{
+				"<leader>dk",
+				function()
+					require("dap").up()
+				end,
+				desc = "Go up stack frame",
+			},
+			{
+				"<leader>dj",
+				function()
+					require("dap").down()
+				end,
+				desc = "Go down stack frame",
+			},
+		},
 		after = function()
 			local dap, dapui = require("dap"), require("dapui")
-			local widgets = require("dap.ui.widgets")
 
 			dapui.setup({
 				expand_lines = true,
@@ -151,25 +281,6 @@ return {
 			dap.listeners.before.event_exited.dapui_config = function()
 				dapui.close()
 			end
-
-    --stylua: ignore start
-		vim.keymap.set("n", "<F1>", dapui.toggle, { desc = "Toggle Debug UI" })
-		vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/continue debugging" })
-		vim.keymap.set("n", "<F2>", dap.step_over, { desc = "Step over" })
-		vim.keymap.set("n", "<F10>", dap.terminate, { desc = "Terminate session" })
-		vim.keymap.set({ "n", "v" }, "<C-t>", function() widgets.preview() end, { desc = "Show variable in preview window" })
-    vim.keymap.set("n", "<leader>df", function() widgets.centered_float(widgets.frames, { border = "rounded", width = 100, height = 20, }) end, { desc = "View call stack" })
-		vim.keymap.set("n", "<leader>dp", dapui.eval, { desc = "Evaluate expression under cursor" })
-		vim.keymap.set({ "n", "v" }, "dP", function() widgets.hover() end, { desc = "Inspect variable under cursor" })
-		vim.keymap.set("n", "<leader>di", dap.step_into, { desc = "Step into" })
-		vim.keymap.set("n", "<leader>do", dap.step_out, { desc = "Step out" })
-		vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
-		vim.keymap.set("n", "<leader>dc", dap.clear_breakpoints, { desc = "Clear breakpoints" })
-		vim.keymap.set("n", "<leader>dC", dap.run_to_cursor, { desc = "Run to cursor" })
-		vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle DAP REPL" })
-		vim.keymap.set("n", "<leader>dk", dap.up, { desc = "Go up stack frame" })
-		vim.keymap.set("n", "<leader>dj", dap.down, { desc = "Go down stack frame" })
-			--stylua: ignore stop
 		end,
 	},
 }

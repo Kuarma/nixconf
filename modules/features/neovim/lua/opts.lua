@@ -8,7 +8,7 @@ opt.relativenumber = false
 opt.spell = true
 opt.spelllang = "en_us"
 opt.spelloptions = "camel"
-opt.spellfile = os.getenv("HOME") .. "/.config/nvim/spell/en.utf-8.add"
+opt.spelllang = { "en" }
 
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 

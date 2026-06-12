@@ -60,7 +60,7 @@ return {
 				enabled = true,
 			},
 			debugger = {
-				-- bin_path = vim.fs.joinpath(vim.fn.stdpath("data"), "mason/bin/netcoredbg"),
+				bin_path = vim.fn.exepath("netcoredbg"),
 				console = "integratedTerminal",
 				apply_value_converters = true,
 				mappings = {
@@ -76,5 +76,6 @@ return {
 				},
 			},
 		})
+		require("easy-dotnet.netcoredbg").register_dap_variables_viewer()
 	end,
 }

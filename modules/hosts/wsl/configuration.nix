@@ -6,7 +6,6 @@
       ...
     }:
     {
-
       imports = [
         inputs.nixos-wsl.nixosModules.default
 
@@ -41,8 +40,11 @@
 
       console.keyMap = "sg";
 
-      wsl.enable = true;
-      wsl.defaultUser = "wsl";
+      wsl = {
+        enable = true;
+        defaultUser = "wsl";
+        useWindowsDriver = true;
+      };
 
       networking.hostName = "nixdows";
 

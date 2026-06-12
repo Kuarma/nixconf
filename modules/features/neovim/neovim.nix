@@ -16,7 +16,6 @@
           sdk_8_0
           sdk_9_0
           sdk_10_0
-          sdk_11_0
         ];
     in
     {
@@ -33,8 +32,8 @@
           nixd
 
           # CSharp
-          dotnet-ef
           dotnet
+          dotnet-ef
 
           # Treesitter
           luaPackages.tree-sitter-cli
@@ -45,6 +44,7 @@
         ];
         sessionVariables = {
           DOTNET_ROOT = "${dotnet}";
+          DOTNET_HOST_PATH = "${dotnet}/dotnet";
         };
       };
     };
@@ -90,6 +90,9 @@
 
           # Easy-Dotnet
           config.packages.easy-dotnet-server
+
+          # Dbg CSharp
+          netcoredbg
         ];
 
         specs.init = {
@@ -134,6 +137,7 @@
             noice-nvim
             nvim-notify
             which-key-nvim
+            snacks-nvim
 
             # Start screen & statusline
             alpha-nvim
@@ -141,20 +145,24 @@
 
             # Language-specific
             easy-dotnet-nvim
+
+            # Debugging
+            nvim-dap
+
+            # File explorer
+            oil-nvim
           ];
         };
 
         specs.lazyPlugins = {
           lazy = true;
           data = with pkgs.vimPlugins; [
-            # Debugging (DAP)
-            nvim-dap
+            # Debugging
             nvim-dap-ui
             nvim-dap-view
             nvim-dap-virtual-text
 
             # File explorer
-            oil-nvim
             oil-git-nvim
             oil-lsp-diagnostics-nvim
 

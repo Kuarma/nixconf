@@ -41,7 +41,9 @@ return {
 	},
 	{
 		"oil-lsp-diagnostics.nvim",
-		before = function() end,
+		after = function()
+			require("oil-lsp-diagnostics").setup()
+		end,
 	},
 	{
 		"oil-git.nvim",

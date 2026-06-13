@@ -272,7 +272,7 @@
       "settingsPanelSideBarCardStyle": false
     },
     "location": {
-      "name": "Liestal",
+      "name": "Zurich",
       "weatherEnabled": true,
       "weatherShowEffects": true,
       "weatherTaliaMascotAlways": false,
@@ -681,47 +681,6 @@
           "widgets": []
         }
       ]
-    }
-  },
-  "state": {
-    "doNotDisturb": false,
-    "noctaliaPerformanceMode": false,
-    "barVisible": true,
-    "openedPanel": "",
-    "lockScreenActive": false,
-    "wallpapers": {
-      "DP-2": "/home/luna/Pictures/Wallpapers/wallhaven_g787ld.jpg"
-    },
-    "desktopWidgetsEditMode": false,
-    "display": {
-      "DP-2": {
-        "name": "DP-2",
-        "connected": true,
-        "scale": 1,
-        "width": 5120,
-        "height": 1440,
-        "x": 0,
-        "y": 0,
-        "physical_width": 1190,
-        "physical_height": 340,
-        "refresh_rate": 239761,
-        "vrr_supported": false,
-        "vrr_enabled": false,
-        "transform": "Normal"
-      }
-    },
-    "notificationsState": {
-      "lastSeenTs": 1781120755000
-    },
-    "changelogState": {
-      "lastSeenVersion": "v4.7.7"
-    },
-    "colorSchemesList": {
-      "schemes": [],
-      "timestamp": 0
-    },
-    "ui": {
-      "settingsSidebarExpanded": true
     }
   }
 }
